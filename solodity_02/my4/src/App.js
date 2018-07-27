@@ -7,7 +7,10 @@ import './css/open-sans.css'
 import './css/pure-min.css'
 import './App.css'
 
-const contractAddress = "0xb30bad26b5e1717509db83c98ec70cbb180361c0";
+const contractAddress = "0x96374539a52410864f2b25d94f33b70448b090f3";
+
+    // Declaring this for later so we can chain functions on SimpleStorage.
+    var simpleStorageInstance
 
 class App extends Component {
   constructor(props) {
@@ -49,8 +52,6 @@ class App extends Component {
     const simpleStorage = contract(SimpleStorageContract)
     simpleStorage.setProvider(this.state.web3.currentProvider)
 
-    // Declaring this for later so we can chain functions on SimpleStorage.
-    var simpleStorageInstance
 
     // Get accounts.
     this.state.web3.eth.getAccounts((error, accounts) => {
@@ -80,16 +81,39 @@ class App extends Component {
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
-              <h1>Good to Go!</h1>
-              <p>Your Truffle Box is installed and ready.</p>
-              <h2>Smart Contract Example</h2>
-              <p>If your contracts compiled and migrated successfully, below will show a stored value of 5 (by default).</p>
-              <p>Try changing the value stored on <strong>line 59</strong> of App.js.</p>
-              <p>The stored value is: {this.state.storageValue}</p>
+              <h1>侯帅测试案例!</h1>
+              <p>可以输入你想要修改的值 <strong></strong> </p>
+              <p>目前以太坊网络上的数据为: {this.state.storageValue}</p>
             </div>
           </div>
         </main>
-      </div>
+
+        <input
+        ref = "blockLabel"
+        style={{width:200, height: 30, boderWidth:2,marginLeft:50}}/>
+
+        <button onClick={()=>{
+          let number = Number(this.refs.blockLabel.value);
+            console.log(number);
+
+            simpleStorageInstance.set(number,{from:this.state.web3.eth.coinbase}).then((result)=>{
+              console.log(result);
+              simpleStorageInstance.get(this.state.web3.eth.coinbase).then((result2)=>{
+                console.log(result2);
+                this.setState({storageValue:result2.c[0]});
+              })
+            })
+
+        }
+
+      }>修改</button>
+</div>
+
+
+
+
+
+
     );
   }
 }
